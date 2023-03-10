@@ -1,27 +1,35 @@
+import os
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
-app = Flask(__name__)
 
-import mysql.connector
-from mysql.connector import errorcode
+from flask import Flask, redirect, render_template, request, send_from_directory, url_for
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 
 
-# Obtain connection string information from the portal
-# production:
-config = {
-  'host':'python-mysql-sample-server.mysql.database.azure.com',
-  'user':'gsoedfdakr',
-  'password':'U0B2155QI15WSUS0$',
-  'database':'python-mysql-sample-database'
-}
+app = Flask(__name__, static_folder='static')
+csrf = CSRFProtect(app)
 
-# test (local):
-# config = {
-#   'host':'localhost',
-#   'user':'robert.tracey',
-#   'password':'i.r8D8UgyeltJ_wC',
-#   'database':'python_sample'
-# }
+# WEBSITE_HOSTNAME exists only in production environment
+if 'WEBSITE_HOSTNAME' not in os.environ:
+    # local development, where we'll use environment variables
+    print("Loading config.development and environment variables from .env file.")
+    app.config.from_object('azureproject.development')
+else:
+    # production
+    print("Loading config.production.")
+    app.config.from_object('azureproject.production')
+
+app.config.update(
+    SQLALCHEMY_DATABASE_URI=app.config.get('DATABASE_URI'),
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+)
+
+# Initialize the database connection
+db = SQLAlchemy(app)
+
+# Enable Flask-Migrate commands "flask db init/migrate/upgrade" to work
+migrate = Migrate(app, db)
 
 @app.route('/')
 def index():
