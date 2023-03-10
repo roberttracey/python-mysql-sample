@@ -6,9 +6,6 @@ import mysql.connector
 from mysql.connector import errorcode
 
 
-
-
-
 # Obtain connection string information from the portal
 # production:
 config = {
@@ -41,7 +38,7 @@ def hello():
    name = request.form.get('name')   
 
    if name:     
-       add_name(name)  
+       # add_name(name)  
        print('Request for hello page received with name=%s' % name)
        return render_template('hello.html', name = name)
    else:
