@@ -5,10 +5,13 @@ from flask import Flask, redirect, render_template, request, send_from_directory
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
+import pymysql
 
 
 app = Flask(__name__, static_folder='static')
 csrf = CSRFProtect(app)
+
+
 
 # WEBSITE_HOSTNAME exists only in production environment
 if 'WEBSITE_HOSTNAME' not in os.environ:
@@ -24,6 +27,8 @@ app.config.update(
     SQLALCHEMY_DATABASE_URI=app.config.get('DATABASE_URI'),
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
 )
+
+app.secret_key = app.config.get('SECRET_KEY')
 
 # Initialize the database connection
 db = SQLAlchemy(app)
@@ -43,15 +48,14 @@ def favicon():
 
 @app.route('/hello', methods=['POST'])
 def hello():
-   name = request.form.get('name')   
+  name = request.form.get('name')   
 
-   if name:     
-       # add_name(name)  
-       print('Request for hello page received with name=%s' % name)
-       return render_template('hello.html', name = name)
-   else:
-       print('Request for hello page received with no name or blank name -- redirecting')
-       return redirect(url_for('index'))
+  if name: 
+    print('Request for hello page received with name=%s' % name)
+    return render_template('hello.html', name = name)
+  else:
+    print('Request for hello page received with no name or blank name -- redirecting')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
