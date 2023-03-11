@@ -4,8 +4,9 @@ from sqlalchemy.orm import validates
 from app import db
 
 
-class names(db.names):
-    __tablename__ = 'names'
+class Name(db.Model):
+    __tablename__ = 'name'
+    id = Column(Integer, primary_key=True)
     name = Column(String(50))
 
     def __str__(self):

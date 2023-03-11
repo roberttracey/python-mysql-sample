@@ -1,6 +1,6 @@
-Flask==2.0.2
+Flask
 Flask-Migrate
-Flask-SQLAlchemy
+Flask-SQLAlchemy==3.0.2
 flask_wtf
 psycopg2
 python-dotenv
