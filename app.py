@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__, static_folder='static')
-# csrf = CSRFProtect(app)
+csrf = CSRFProtect(app)
 
 # WEBSITE_HOSTNAME exists only in production environment
 if 'WEBSITE_HOSTNAME' not in os.environ:
@@ -44,6 +44,7 @@ def favicon():
                              'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/hello', methods=['POST'])
+@csrf.exempt
 def hello():
   name = request.form.get('name')
 
